@@ -1,0 +1,192 @@
+﻿
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<h2>Expenses ( Products Bought )</h2>
+
+<div class="container">
+    <div class="col-md">
+        ID: <input type="text" name="id" id="id" value="" /><br />
+        Product Name : <input type="text" name="name" id="name" value="" /><br />
+
+        Product Price: <input type="text" name="price" id="price" value="" /><br />
+        Quantity: <input type="text" name="qty" id="qty" value="" /><br />
+            <input class="btn btn-primary" type="button" name="btn" id="btn1" value="Add" />
+
+            <input class="btn btn-warning" type="button" name="btn3" id="btn3" value="Update" />
+            <input class="btn btn-danger" type="button" name="btn2" id="btn2" value="Delete" />
+        
+    </div>
+    <div class="col-md">
+        <table class="table table-striped" id="tab1">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+
+            </tr>
+
+        </table>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        $("#tab1").css("display", "none");
+        $.getJSON("/api/Products/", function (data) {
+            $("#tab1").css("display", "block");
+            $.each(data, function (key, val) {
+                $("<tr><td>" + val.id + "</td><td>" + val.name + "</td><td>" + val.price + "</td><td>" + val.quantity + "</td></tr>").appendTo($("#tab1"));
+
+
+            })
+        })
+        //POST
+        $("#btn1").click(function () {
+            var n = $("#name").val();
+            var q = $("#qty").val();
+            var p = $("#price").val();
+            $.ajax({
+
+                type: "POST",
+
+                contentType: "application/json;charset=utf-8",
+
+                url: "/api/Products/",
+
+                data: JSON.stringify({
+
+
+
+                    name: n,
+
+                    quantity: q,
+                    price: p,
+
+
+
+
+                }),
+
+                dataType: "JSON",
+
+                success: function (data) {
+                    $("#tab1").find("tr:gt(0)").remove();
+                    $.getJSON("/api/Products/", function (data) {
+                        $("#tab1").css("display", "block");
+                        $.each(data, function (key, val) {
+                            $("<tr><td>" + val.id + "</td><td>" + val.name + "</td><td>" + val.price + "</td><td>" + val.quantity + "</td></tr>").appendTo($("#tab1"));
+
+
+                        })
+
+                    })
+
+
+
+                }
+            });
+
+
+        })
+        //Delete
+        $("#btn2").click(function () {
+            var id = $("#id").val();
+
+            $.ajax({
+
+                type: "DELETE",
+
+                contentType: "application/json;charset=utf-8",
+
+                url: "/api/Products/" + $("#id").val(),
+
+                data: JSON.stringify({
+
+
+
+                    id: $("#id").val(),
+
+
+
+
+
+                }),
+
+                dataType: "JSON",
+
+                success: function (data) {
+                    $("#tab1").find("tr:gt(0)").remove();
+                    $.getJSON("/api/Contacts/", function (data) {
+                        $("#tab1").css("display", "block");
+                        $.each(data, function (key, val) {
+                            $("<tr><td>" + val.id + "</td><td>" + val.name + "</td><td>" + val.price + "</td><td>" + val.quantity + "</td></tr>").appendTo($("#tab1"));
+
+
+                        })
+
+                    })
+
+
+
+                }
+            });
+
+
+        })
+
+        //Update
+        $("#btn3").click(function () {
+            var id = $("#id").val();
+            var name = $("#name").val();
+            var q = $("#qty").val();
+            var p = $("#price").val();
+
+            $.ajax({
+
+                type: "PUT",
+
+                contentType: "application/json;charset=utf-8",
+
+                url: "/api/Products/" + $("#id").val(),
+
+                data: JSON.stringify({
+
+
+                    id: $("#id").val(),
+                    name: $("#name").val(),
+                    quantity: q,
+                    price: p,
+
+
+                }),
+
+                dataType: "JSON",
+
+                success: function (data) {
+                    $("#tab1").find("tr:gt(0)").remove();
+                    $.getJSON("/api/Products/", function (data) {
+                        $("#tab1").css("display", "block");
+                        $.each(data, function (key, val) {
+                            $("<tr><td>" + val.id + "</td><td>" + val.name + "</td><td>" + val.price + "</td><td>" + val.quantity + "</td></tr>").appendTo($("#tab1"));
+
+
+                        })
+
+                    })
+
+
+
+                }
+            });
+
+
+        })
+    });
+
+</script>
